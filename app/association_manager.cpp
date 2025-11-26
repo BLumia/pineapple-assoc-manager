@@ -126,7 +126,7 @@ void AssociationManager::applyAssociations(const QList<QString> &selectedProgIds
     qDebug() << "Command:" << command;
     QSettings classesReg("HKEY_CURRENT_USER\\Software\\Classes", QSettings::NativeFormat);
     // Register or unregister the Applications entry
-    QString appRegKey = "Applications\\" + m_targetApp;
+    QString appRegKey = "Applications/" + m_targetApp;
     if (!selectedProgIds.isEmpty()) {
         classesReg.beginGroup(appRegKey);
         classesReg.setValue("FriendlyAppName", m_friendlyAppName);
@@ -159,6 +159,7 @@ void AssociationManager::applyAssociations(const QList<QString> &selectedProgIds
         // Register in RegisteredApplications (required for Windows Settings)
         QSettings regApps("HKEY_CURRENT_USER\\Software\\RegisteredApplications", QSettings::NativeFormat);
         QString capabilitiesPath = "Software\\Classes\\" + appRegKey + "\\Capabilities";
+        capabilitiesPath.replace('/', '\\');
         regApps.setValue(m_friendlyAppName, capabilitiesPath);
         regApps.sync();
         qDebug() << "Registered in RegisteredApplications:" << m_friendlyAppName;
