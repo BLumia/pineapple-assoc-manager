@@ -60,12 +60,12 @@ int main(int argc, char *argv[]) {
     }
 
     // Check if target app exists
-    QDir dir = QCoreApplication::applicationDirPath();
-    if (!dir.exists(manager.targetApp())) {
+    QString targetAppFullPath(manager.getTargetAppFullPath());
+    if (!QFile::exists(targetAppFullPath)) {
         QMessageBox::critical(nullptr, "Error", 
-            QString("Target application '%1' not found in: %2")
+            QString("Target application '%1' not found at: %2")
             .arg(manager.targetApp())
-            .arg(dir.absolutePath()));
+            .arg(targetAppFullPath));
         return 1;
     }
 

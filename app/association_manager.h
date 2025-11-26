@@ -29,6 +29,7 @@ public:
     QList<ProgIdInfo> progIds() const { return m_progIds; }
     bool isAppRegistered() const { return m_isAppRegistered; }
     int associatedCount() const;
+    QString getTargetAppFullPath() const;
 
     void openDefaultAppsSettings() const;
 
@@ -44,5 +45,4 @@ private:
     bool m_isAppRegistered = false;
 
     QString getAbsoluteIconPath(const QString &iconName) const;
-    QString getTargetAppFullPath() const;
 };
