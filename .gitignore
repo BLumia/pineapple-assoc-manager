@@ -1,0 +1,9 @@
+# clangd cache
+.cache/
+
+# generic build folder
+[bB]uild/
+
+# IDE folders
+.qtcreator/
+.vscode/
