@@ -35,9 +35,9 @@ void MainWindow::updateUI() {
         item->setData(Qt::UserRole, info.id);
     }
 
-    QString status = QString("Registered: %1 | Associated: %2 format(s)")
-                         .arg(m_manager->isAppRegistered() ? "Yes" : "No")
-                         .arg(m_manager->associatedCount());
+    QString status = tr("Registered: %1 | Associated: %2 format(s)")
+                        .arg(m_manager->isAppRegistered() ? tr("Yes") : tr("No"))
+                        .arg(m_manager->associatedCount());
     ui->statusbar->showMessage(status);
 }
 

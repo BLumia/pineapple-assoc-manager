@@ -4,13 +4,13 @@ friendlyAppName[zh_CN]=菠萝格式关联管理器
 openCommand="\"{targetAppFullPath}\" \"%1\""
 
 [ProgId/pacfg]
-name=Pineapple Association Configuration File
-name[zh_CN]=菠萝格式关联配置文件
+name=Association Configuration File
+name[zh_CN]=格式关联配置文件
 extensions=pacfg
 openCommand="\"{targetAppFullPath}\" -c \"%1\""
 
 [ProgId/pademo]
-name=Pineapple Association Demo File
-name[zh_CN]=菠萝格式关联测试文件
-extensions=pademo
+name=Association Demo File
+name[zh_CN]=格式关联测试文件
+extensions=pademo,patest
 openCommand="\"{targetAppFullPath}\" -d \"%1\""

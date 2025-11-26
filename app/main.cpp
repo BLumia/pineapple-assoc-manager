@@ -7,10 +7,16 @@
 #include <QApplication>
 #include <QCommandLineParser>
 #include <QMessageBox>
+#include <QTranslator>
 #include <QDir>
 
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
+
+    QTranslator translator;
+    if (translator.load(QLocale(), "pineapple-assoc-manager", "_", ":/i18n/")) {
+        a.installTranslator(&translator);
+    }
 
     QApplication::setApplicationName("Pineapple Assoc Manager");
     QApplication::setApplicationDisplayName(
@@ -25,11 +31,26 @@ int main(int argc, char *argv[]) {
             QCoreApplication::translate("main", "Path to configuration file."),
             QCoreApplication::translate("main", "file"));
     parser.addOption(configOption);
+    QCommandLineOption demoOption(QStringList() << "d" << "demo",
+                                  QCoreApplication::translate("main", "Path to .pademo/.patest file."),
+                                  QCoreApplication::translate("main", "file"));
+    parser.addOption(demoOption);
     parser.process(a);
+
+    if (parser.isSet(demoOption)) {
+        QCommandLineParser::showMessageAndExit(QCommandLineParser::MessageType::Information,
+                                               QString("Demo: The passed file name is: %1").arg(parser.value(demoOption)));
+    }
 
     QString configPath = parser.value(configOption);
     if (configPath.isEmpty()) {
-        configPath = ":/default-assoc.pacfg";
+        // Check if program location contains default-assoc.pacfg first, if so, use that.
+        // Otherwise use default-assoc.pacfg from qrc
+        configPath = QCoreApplication::applicationDirPath() + QDir::separator() + "default-assoc.pacfg";
+        if (!QFile::exists(configPath)) {
+            qDebug() << "External default config not found at" << configPath;
+            configPath = ":/default-assoc.pacfg";
+        }
     }
 
     AssociationManager manager;

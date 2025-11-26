@@ -22,7 +22,10 @@ find_package(Qt6 "6.8" REQUIRED COMPONENTS Widgets LinguistTools)
 
 set(EXE_NAME passoc)
 
-qt_add_executable(${EXE_NAME}
+# Enable Qt tools
+qt_standard_project_setup(I18N_TRANSLATED_LANGUAGES en zh_CN)
+
+qt_add_executable(${EXE_NAME} WIN32
     app/main.cpp
     app/mainwindow.cpp
     app/mainwindow.h
@@ -35,6 +38,17 @@ qt_add_resources(${EXE_NAME} resources.qrc
     PREFIX "/"
     BASE "app/"
     FILES "app/default-assoc.pacfg"
+)
+
+if (Qt6_VERSION VERSION_GREATER_EQUAL "6.9.0")
+    set(ADD_TRANSLATIONS_ADDITIONAL_ARGS MERGE_QT_TRANSLATIONS)
+endif()
+
+# Add translations
+qt_add_translations(${EXE_NAME}
+    TS_FILE_DIR translations # Before Qt 6.9, the argument TS_OUTPUT_DIRECTORY was called TS_FILE_DIR. That name is still an alias for TS_OUTPUT_DIRECTORY to keep older project files working.
+    RESOURCE_PREFIX "/i18n"
+    ${ADD_TRANSLATIONS_ADDITIONAL_ARGS}
 )
 
 target_link_libraries(${EXE_NAME} PRIVATE Qt6::Widgets)
