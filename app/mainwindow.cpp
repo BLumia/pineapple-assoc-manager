@@ -67,11 +67,11 @@ void MainWindow::onApplyClicked() {
         QMessageBox infoBox(this);
         infoBox.setIcon(QMessageBox::Information);
         infoBox.setWindowTitle(tr("Success"));
-        infoBox.setStandardButtons(QMessageBox::Discard);
         QPushButton * btn = infoBox.addButton(tr("System Settings"), QMessageBox::ActionRole);
         connect(btn, &QPushButton::clicked, this, [this](){
             on_defaultAppSettingsButton_clicked();
         });
+        infoBox.addButton(tr("Skip"), QMessageBox::RejectRole); // we don't really care if it's "Reject" tho, this button simply do nothing...
         infoBox.setText(tr("Associations information updated successfully."));
         infoBox.setInformativeText(tr("You might also want to open System Settings' default apps management page. Open now?"));
         infoBox.exec();
@@ -90,18 +90,18 @@ void MainWindow::on_helpButton_clicked()
 {
     QMessageBox infoBox(this);
 
-    QString helpText = tr(R"(This program helps you register file type assoication information and capabilities to system register.
-
-When you click the "Register Association" button, if you have checked at least one file type association, this program will
-register `%1` to your system, with the file type association capabilities you've selected.
-
-Due to Windows 10+ limitation, **if you already associated the selected formats with other program, then we cannot directly modify
+    QStringList helpTexts {
+        tr("This program helps you register file type assoication information and capabilities to system register."),
+        tr(R"(When you click the "Register Association" button, if you have checked at least one file type association, this program will
+register `%1` to your system, with the file type association capabilities you've selected.)"),
+        tr(R"(Due to Windows 10+ limitation, **if you already associated the selected formats with other program, then we cannot directly modify
 existing file type association for you**, so after you done the registration by clicking "Register Association", you can then click
-the "System Settings" button to directly open the system control panel for `%1`, so you can manage the file type association there.
+the "System Settings" button to directly open the system control panel for `%1`, so you can manage the file type association there.)"),
+        tr(R"(When you want to remove the system registration for `%1`, you can simply uncheck all file types on the left-hand side,
+then click "Register Association" again. It will remove all related information from the system registery.)")
+    };
 
-When you want to remove the system registration for `%1`, you can simply uncheck all file types on the left-hand side,
-then click "Register Association" again. It will remove all related information from the system registery.
-)").arg(!m_manager->friendlyAppName().isEmpty() ? m_manager->friendlyAppName() : m_manager->targetApp());
+    QString helpText = helpTexts.join("\n\n").arg(!m_manager->friendlyAppName().isEmpty() ? m_manager->friendlyAppName() : m_manager->targetApp());
 
     infoBox.setIcon(QMessageBox::Information);
     infoBox.setWindowTitle(tr("Help"));

@@ -26,7 +26,7 @@
     </message>
     <message>
         <location filename="../app/mainwindow.ui" line="67"/>
-        <location filename="../app/mainwindow.cpp" line="71"/>
+        <location filename="../app/mainwindow.cpp" line="70"/>
         <source>System Settings</source>
         <translation type="unfinished"></translation>
     </message>
@@ -62,6 +62,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../app/mainwindow.cpp" line="74"/>
+        <source>Skip</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../app/mainwindow.cpp" line="75"/>
         <source>Associations information updated successfully.</source>
         <translation type="unfinished"></translation>
@@ -77,19 +82,27 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../app/mainwindow.cpp" line="93"/>
-        <source>This program helps you register file type assoication information and capabilities to system register.
-
-When you click the &quot;Register Association&quot; button, if you have checked at least one file type association, this program will
-register `%1` to your system, with the file type association capabilities you&apos;ve selected.
-
-Due to Windows 10+ limitation, **if you already associated the selected formats with other program, then we cannot directly modify
+        <location filename="../app/mainwindow.cpp" line="94"/>
+        <source>This program helps you register file type assoication information and capabilities to system register.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../app/mainwindow.cpp" line="95"/>
+        <source>When you click the &quot;Register Association&quot; button, if you have checked at least one file type association, this program will
+register `%1` to your system, with the file type association capabilities you&apos;ve selected.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../app/mainwindow.cpp" line="97"/>
+        <source>Due to Windows 10+ limitation, **if you already associated the selected formats with other program, then we cannot directly modify
 existing file type association for you**, so after you done the registration by clicking &quot;Register Association&quot;, you can then click
-the &quot;System Settings&quot; button to directly open the system control panel for `%1`, so you can manage the file type association there.
-
-When you want to remove the system registration for `%1`, you can simply uncheck all file types on the left-hand side,
-then click &quot;Register Association&quot; again. It will remove all related information from the system registery.
-</source>
+the &quot;System Settings&quot; button to directly open the system control panel for `%1`, so you can manage the file type association there.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../app/mainwindow.cpp" line="100"/>
+        <source>When you want to remove the system registration for `%1`, you can simply uncheck all file types on the left-hand side,
+then click &quot;Register Association&quot; again. It will remove all related information from the system registery.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

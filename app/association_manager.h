@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 Gary Wang <opensource@blumia.net>
+//
+// SPDX-License-Identifier: MIT
+
 #pragma once
 
 #include <QString>

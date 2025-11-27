@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 Gary Wang <opensource@blumia.net>
+//
+// SPDX-License-Identifier: MIT
+
 #include "association_manager.h"
 #include <QSettings>
 #include <QCoreApplication>

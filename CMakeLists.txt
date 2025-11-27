@@ -40,15 +40,10 @@ qt_add_resources(${EXE_NAME} resources.qrc
     FILES "app/default-assoc.pacfg"
 )
 
-if (Qt6_VERSION VERSION_GREATER_EQUAL "6.9.0")
-    set(ADD_TRANSLATIONS_ADDITIONAL_ARGS MERGE_QT_TRANSLATIONS)
-endif()
-
 # Add translations
 qt_add_translations(${EXE_NAME}
     TS_FILE_DIR translations # Before Qt 6.9, the argument TS_OUTPUT_DIRECTORY was called TS_FILE_DIR. That name is still an alias for TS_OUTPUT_DIRECTORY to keep older project files working.
     RESOURCE_PREFIX "/i18n"
-    ${ADD_TRANSLATIONS_ADDITIONAL_ARGS}
 )
 
 target_link_libraries(${EXE_NAME} PRIVATE Qt6::Widgets)
