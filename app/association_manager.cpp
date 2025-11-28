@@ -80,6 +80,10 @@ bool AssociationManager::loadConfig(const QString &configPath) {
                 if (!t.isEmpty())
                     info.extensions.append(t);
             }
+            // Fallback: if no extensions specified, use the ProgId name as extension
+            if (info.extensions.isEmpty()) {
+                info.extensions.append(id);
+            }
             info.icon = settings.value("icon").toString();
             info.openCommand = settings.value("openCommand").toString();
             m_progIds.append(info);

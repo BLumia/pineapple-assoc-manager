@@ -11,10 +11,10 @@ friendlyAppName=Pineapple Assoc Manager ; 目标程序的友好名称
 friendlyAppName[zh_CN]=菠萝格式关联管理器 ; 可以添加多语言的支持
 openCommand="\"{targetAppFullPath}\" \"%1\"" ; 打开文件的命令（若 ProgId 内没有指定则使用此命令）
 
-[ProgId/pacfg] ; 一组扩展名（对应注册表的 ProgId）
+[ProgId/pacfg] ; 文件格式（对应注册表的 ProgId）
 name=Pineapple Association Configuration File ; 此扩展名对用户的显示名称
 name[zh_CN]=菠萝格式关联配置文件 ; 同样支持多语言本地化支持
-extensions=pacfg ; 实际的扩展名，可以是多个扩展名，用半角逗号分隔
+extensions=pacfg ; 扩展名列表，多个扩展名时用半角逗号分隔。省略此字段时，将使用 ProgId 的名称作为扩展名。
 openCommand="\"{targetAppFullPath}\" -c \"%1\"" ; 打开文件的命令，可选，不提供则使用顶层 openCommand 的内容
 icon=pacfg.ico ; 图标（可选）
 ```
