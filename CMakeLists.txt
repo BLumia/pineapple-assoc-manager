@@ -25,6 +25,8 @@ set(EXE_NAME passoc)
 # Enable Qt tools
 qt_standard_project_setup(I18N_TRANSLATED_LANGUAGES en zh_CN)
 
+configure_file(assets/pineapple-assoc-manager.rc.in pineapple-assoc-manager.rc @ONLY)
+
 qt_add_executable(${EXE_NAME} WIN32
     app/main.cpp
     app/mainwindow.cpp
@@ -32,6 +34,7 @@ qt_add_executable(${EXE_NAME} WIN32
     app/mainwindow.ui
     app/association_manager.cpp
     app/association_manager.h
+    ${CMAKE_CURRENT_BINARY_DIR}/pineapple-assoc-manager.rc
 )
 
 qt_add_resources(${EXE_NAME} resources.qrc

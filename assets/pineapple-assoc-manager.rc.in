@@ -1,0 +1,18 @@
+IDI_ICON1               ICON    DISCARDABLE     "@CMAKE_CURRENT_SOURCE_DIR@/assets/icons/app-icon.ico"
+1               VERSIONINFO
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904E4"
+        BEGIN
+            VALUE "FileDescription", "File Types Association Manager"
+            VALUE "LegalCopyright", "MIT/Expat License - Copyright (C) 2025 Gary Wang"
+            VALUE "ProductName", "Pineapple Association Manager"
+            VALUE "ProductVersion", "@PROJECT_VERSION@"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
