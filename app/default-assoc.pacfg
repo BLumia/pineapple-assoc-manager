@@ -6,7 +6,6 @@ openCommand="\"{targetAppFullPath}\" \"%1\""
 [ProgId/pacfg]
 name=Association Configuration File
 name[zh_CN]=格式关联配置文件
-extensions=pacfg
 openCommand="\"{targetAppFullPath}\" -c \"%1\""
 
 [ProgId/pademo]

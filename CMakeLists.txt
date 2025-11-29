@@ -61,3 +61,8 @@ install (
     TARGETS ${EXE_NAME}
     ${INSTALL_TARGETS_DEFAULT_ARGS}
 )
+
+install(
+    FILES assets/icons/pacfg.ico
+    DESTINATION "${CMAKE_INSTALL_BINDIR}/icons"
+)

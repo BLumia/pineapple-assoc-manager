@@ -84,7 +84,7 @@ bool AssociationManager::loadConfig(const QString &configPath) {
             if (info.extensions.isEmpty()) {
                 info.extensions.append(id);
             }
-            info.icon = settings.value("icon").toString();
+            info.icon = settings.value("icon", QString("icons/%1.ico").arg(id)).toString();
             info.openCommand = settings.value("openCommand").toString();
             m_progIds.append(info);
             settings.endGroup();
@@ -260,8 +260,9 @@ int AssociationManager::associatedCount() const {
 }
 
 QString AssociationManager::getAbsoluteIconPath(const QString &iconName) const {
-    QDir dir = QCoreApplication::applicationDirPath();
-    return QDir::toNativeSeparators(dir.absoluteFilePath(iconName));
+    QFileInfo targetAppFullPath(getTargetAppFullPath());
+    QDir targetAppDir(targetAppFullPath.absoluteDir());
+    return QDir::toNativeSeparators(targetAppDir.absoluteFilePath(iconName));
 }
 
 QString AssociationManager::getTargetAppFullPath() const {
