@@ -45,6 +45,7 @@ private:
     QString m_targetApp;
     QString m_friendlyAppName;
     QString m_openCommand;
+    QString m_genericFileIcon;
     QList<ProgIdInfo> m_progIds;
     bool m_isAppRegistered = false;
 

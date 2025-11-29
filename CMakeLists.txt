@@ -5,7 +5,7 @@
 cmake_minimum_required(VERSION 3.23)
 
 project(pineapple-assoc-manager
-    VERSION 0.1
+    VERSION 0.2.0
     HOMEPAGE_URL "https://github.com/BLumia/pineapple-assoc-manager"
 )
 

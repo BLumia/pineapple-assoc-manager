@@ -36,6 +36,7 @@ bool AssociationManager::loadConfig(const QString &configPath) {
     QSettings settings(actualConfigPath, QSettings::IniFormat);
     m_targetApp = settings.value("targetApp").toString();
     m_openCommand = settings.value("openCommand").toString();
+    m_genericFileIcon = settings.value("genericFileIcon").toString();
     if (m_targetApp.isEmpty()) {
         qWarning() << "targetApp not specified in config";
         return false;
@@ -192,6 +193,9 @@ void AssociationManager::applyAssociations(const QList<QString> &selectedProgIds
             classesReg.setValue(".", info.name);
             if (!info.icon.isEmpty()) {
                 QString iconPath = getAbsoluteIconPath(info.icon);
+                if (!QFile::exists(iconPath) && !m_genericFileIcon.isEmpty()) {
+                    iconPath = getAbsoluteIconPath(m_genericFileIcon);
+                }
                 if (QFile::exists(iconPath)) {
                     classesReg.beginGroup("DefaultIcon");
                     classesReg.setValue(".", iconPath);

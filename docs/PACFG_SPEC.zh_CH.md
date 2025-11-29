@@ -10,6 +10,7 @@ targetApp=passoc.exe ; 目标程序的可执行文件名，位置相对于 .pacf
 friendlyAppName=Pineapple Assoc Manager ; 目标程序的友好名称
 friendlyAppName[zh_CN]=菠萝格式关联管理器 ; 可以添加多语言的支持
 openCommand="\"{targetAppFullPath}\" \"%1\"" ; 打开文件的命令（若 ProgId 内没有指定则使用此命令）
+genericFileIcon=icons/generic.ico ; 当 ProgId 的图标缺失时的 fallback 图标（可选）
 
 [ProgId/pacfg] ; 文件格式（对应注册表的 ProgId）
 name=Pineapple Association Configuration File ; 此扩展名对用户的显示名称
@@ -30,4 +31,5 @@ icon=icons/pacfg.ico ; 图标（可选）
 4. `ProgId` 可以有多组，`[ProgId/{ProgIdName}]` 名称可以自定义，但建议和该组其中的一个实际扩展名保持一致。
 5. `extensions` 可以有多个扩展名，用半角逗号分隔，半角逗号后不加多余空格，例如 `jpg,jpeg,jfif`。
 6. `friendlyAppName` 与 `ProgId` 下的 `name` 支持本地化。实际写入到注册表中的名称是匹配到的本地化名称。
-7. `icon` 是可选字段，可以指定图标文件，路径相对于目标程序所在目录，暂不支持内嵌资源文件。当此字段被省略时，默认值为 `icons/{ProgIdName}.ico`。若找不到此图标文件，则不会注册此文件格式的图标（系统表现会使用目标程序本身的图标）。
+7. `icon` 是可选字段，可以指定图标文件，路径相对于目标程序所在目录，暂不支持内嵌资源文件。当此字段被省略时，默认值为 `icons/{ProgIdName}.ico`。若找不到此图标文件，则尝试使用 `genericFileIcon` 指定的图标。若仍找不到，则不会注册此文件格式的图标（系统表现会使用目标程序本身的图标）。
+8. `genericFileIcon` 是可选的顶层字段，用于指定当 ProgId 特定的图标无法找到时的通用 fallback 图标。
