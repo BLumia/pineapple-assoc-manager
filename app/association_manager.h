@@ -24,14 +24,14 @@ class AssociationManager : public QObject {
 public:
     explicit AssociationManager(QObject *parent = nullptr);
 
-    bool loadConfig(const QString &configPath);
+    bool loadConfig(const QString &configPath, const QString &targetAppOverride = QString());
     void checkStatus();
     void applyAssociations(const QList<QString> &selectedProgIds);
 
-    QString targetApp() const { return m_targetApp; }
     QString friendlyAppName() const { return m_friendlyAppName; }
     QList<ProgIdInfo> progIds() const { return m_progIds; }
     bool isAppRegistered() const { return m_isAppRegistered; }
+    QString targetApp(bool withoutSuffix = false) const;
     int associatedCount() const;
     QString getTargetAppFullPath() const;
 

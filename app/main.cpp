@@ -9,6 +9,7 @@
 #include <QMessageBox>
 #include <QTranslator>
 #include <QDir>
+#include <QFileDialog>
 
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
@@ -35,6 +36,10 @@ int main(int argc, char *argv[]) {
                                   QCoreApplication::translate("main", "Path to .pademo/.patest file."),
                                   QCoreApplication::translate("main", "file"));
     parser.addOption(demoOption);
+    // an option to enable manual select exectuable as fallback, default off
+    QCommandLineOption manualFallbackOption(QStringList() << "m" << "manual-fallback",
+                                            QCoreApplication::translate("main", "Manual select exectuable when target app not found."));
+    parser.addOption(manualFallbackOption);
     parser.process(a);
 
     if (parser.isSet(demoOption)) {
@@ -59,11 +64,38 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    // Check if target app exists
     QString targetAppFullPath(manager.getTargetAppFullPath());
+
+    // allow user to locate target app if it doesn't exist
+    while (!QFile::exists(targetAppFullPath) && parser.isSet(manualFallbackOption)) {
+        QMessageBox::StandardButton reply = QMessageBox::question(nullptr, 
+            "Target Application Not Found",
+            QString("Target application '%1' not found at:\n%2\n\nDo you want to locate it manually?")
+            .arg(manager.targetApp())
+            .arg(targetAppFullPath),
+            QMessageBox::Yes | QMessageBox::No);
+            
+        if (reply == QMessageBox::Yes) {
+            QString fileName = QFileDialog::getOpenFileName(nullptr, 
+                "Locate Target Application",
+                QFileInfo(targetAppFullPath).absolutePath(),
+                QString("Target App (%1);;Executables (*.exe)").arg(manager.targetApp()));
+                
+            if (!fileName.isEmpty()) {
+                // Try to reload config with the new target app
+                if (manager.loadConfig(configPath, fileName)) {
+                    targetAppFullPath = manager.getTargetAppFullPath();
+                }
+            }
+        } else {
+            break;
+        }
+    }
+
+    // Check if target app exists
     if (!QFile::exists(targetAppFullPath)) {
         QMessageBox::critical(nullptr, "Error", 
-            QString("Target application '%1' not found at: %2")
+            QString("Target application '%1' not found at:\n%2")
             .arg(manager.targetApp())
             .arg(targetAppFullPath));
         return 1;

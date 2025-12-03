@@ -17,7 +17,7 @@
 
 AssociationManager::AssociationManager(QObject *parent) : QObject(parent) {}
 
-bool AssociationManager::loadConfig(const QString &configPath) {
+bool AssociationManager::loadConfig(const QString &configPath, const QString &targetAppOverride) {
     m_configPath = configPath;
     if (!QFileInfo::exists(configPath)) {
         qWarning() << "Config file not found:" << configPath;
@@ -34,7 +34,7 @@ bool AssociationManager::loadConfig(const QString &configPath) {
         }
     }
     QSettings settings(actualConfigPath, QSettings::IniFormat);
-    m_targetApp = settings.value("targetApp").toString();
+    m_targetApp = targetAppOverride.isEmpty() ? settings.value("targetApp").toString() : targetAppOverride;
     m_openCommand = settings.value("openCommand").toString();
     m_genericFileIcon = settings.value("genericFileIcon").toString();
     if (m_targetApp.isEmpty()) {
@@ -51,7 +51,7 @@ bool AssociationManager::loadConfig(const QString &configPath) {
     else
         m_friendlyAppName = settings.value("friendlyAppName").toString();
     if (m_friendlyAppName.isEmpty())
-        m_friendlyAppName = m_targetApp;
+        m_friendlyAppName = targetApp();
     // Load ProgIDs
     m_progIds.clear();
     if (settings.childGroups().contains("ProgId")) {
@@ -59,7 +59,7 @@ bool AssociationManager::loadConfig(const QString &configPath) {
         for (const QString &id : settings.childGroups()) {
             settings.beginGroup(id);
             ProgIdInfo info;
-            QString baseName = QFileInfo(m_targetApp).completeBaseName();
+            QString baseName = targetApp(true);
             info.id = baseName + "." + id;
             // name localization
             if (settings.contains("name[" + lang + "]"))
@@ -97,7 +97,7 @@ bool AssociationManager::loadConfig(const QString &configPath) {
 
 void AssociationManager::checkStatus() {
     QSettings classesReg("HKEY_CURRENT_USER\\Software\\Classes", QSettings::NativeFormat);
-    QString appRegKey = "Applications/" + m_targetApp;
+    QString appRegKey = "Applications/" + targetApp();
     classesReg.beginGroup(appRegKey);
     m_isAppRegistered = !classesReg.value("FriendlyAppName").toString().isEmpty();
     classesReg.endGroup();
@@ -135,7 +135,7 @@ void AssociationManager::applyAssociations(const QList<QString> &selectedProgIds
     qDebug() << "Command:" << command;
     QSettings classesReg("HKEY_CURRENT_USER\\Software\\Classes", QSettings::NativeFormat);
     // Register or unregister the Applications entry
-    QString appRegKey = "Applications/" + m_targetApp;
+    QString appRegKey = "Applications/" + targetApp();
     if (!selectedProgIds.isEmpty()) {
         classesReg.beginGroup(appRegKey);
         classesReg.setValue("FriendlyAppName", m_friendlyAppName);
@@ -253,6 +253,15 @@ void AssociationManager::applyAssociations(const QList<QString> &selectedProgIds
     // Notify System
     SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, nullptr, nullptr);
     checkStatus();
+}
+
+QString AssociationManager::targetApp(bool withoutSuffix) const
+{
+    QFileInfo fi(m_targetApp);
+    if (withoutSuffix) {
+        return fi.completeBaseName();
+    }
+    return fi.fileName();
 }
 
 int AssociationManager::associatedCount() const {
