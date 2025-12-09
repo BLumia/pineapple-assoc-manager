@@ -22,7 +22,6 @@ jobs:
       with:
         arch: ${{ matrix.aqt_arch }}
         version: ${{ matrix.qt_ver }}
-        modules: 'qtimageformats'
         cache: true
     - name: Build
       shell: cmd
