@@ -36,7 +36,7 @@ bool AssociationManager::loadConfig(const QString &configPath, const QString &ta
     QSettings settings(actualConfigPath, QSettings::IniFormat);
     m_targetApp = targetAppOverride.isEmpty() ? settings.value("targetApp").toString() : targetAppOverride;
     m_openCommand = settings.value("openCommand").toString();
-    m_genericFileIcon = settings.value("genericFileIcon").toString();
+    m_genericFileIcon = settings.value("genericFileIcon", "icons/generic.ico").toString();
     if (m_targetApp.isEmpty()) {
         qWarning() << "targetApp not specified in config";
         return false;
@@ -192,9 +192,9 @@ void AssociationManager::applyAssociations(const QList<QString> &selectedProgIds
             classesReg.beginGroup(info.id);
             classesReg.setValue(".", info.name);
             if (!info.icon.isEmpty()) {
-                QString iconPath = getAbsoluteIconPath(info.icon);
+                QString iconPath = getAbsoluteFilePath(info.icon);
                 if (!QFile::exists(iconPath) && !m_genericFileIcon.isEmpty()) {
-                    iconPath = getAbsoluteIconPath(m_genericFileIcon);
+                    iconPath = getAbsoluteFilePath(m_genericFileIcon);
                 }
                 if (QFile::exists(iconPath)) {
                     classesReg.beginGroup("DefaultIcon");
@@ -272,10 +272,10 @@ int AssociationManager::associatedCount() const {
     return count;
 }
 
-QString AssociationManager::getAbsoluteIconPath(const QString &iconName) const {
+QString AssociationManager::getAbsoluteFilePath(const QString &relativeFilePathAndName) const {
     QFileInfo targetAppFullPath(getTargetAppFullPath());
     QDir targetAppDir(targetAppFullPath.absoluteDir());
-    return QDir::toNativeSeparators(targetAppDir.absoluteFilePath(iconName));
+    return QDir::toNativeSeparators(targetAppDir.absoluteFilePath(relativeFilePathAndName));
 }
 
 QString AssociationManager::getTargetAppFullPath() const {

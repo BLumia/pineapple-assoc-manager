@@ -49,5 +49,5 @@ private:
     QList<ProgIdInfo> m_progIds;
     bool m_isAppRegistered = false;
 
-    QString getAbsoluteIconPath(const QString &iconName) const;
+    QString getAbsoluteFilePath(const QString &relativeFilePathAndName) const;
 };
