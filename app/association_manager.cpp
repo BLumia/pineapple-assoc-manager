@@ -188,7 +188,22 @@ void AssociationManager::applyAssociations(const QList<QString> &selectedProgIds
     for (const auto &info : m_progIds) {
         bool shouldRegister = selectedProgIds.contains(info.id);
         if (shouldRegister) {
-            // Register ProgID
+            // Check and remove existing xxx_auto_file ProgID
+            // This handles the case where user previously manually associated the extension
+            // with any app via "Open With", result having such auto-file ProgId, which has higher precedence than
+            // non auto-file ProgIDs. We want our new ProgID to take effect if user chose it.
+            for (const QString &ext : info.extensions) {
+                QString autoFileProgId = ext + "_auto_file";
+                // Check if the auto-file ProgID exists
+                if (classesReg.childGroups().contains(autoFileProgId)) {
+                    // User explicitly associated the extension with our app, thus this is safe to remove.
+                    qDebug() << "Found and will remove auto-file ProgID:" << autoFileProgId;
+                    classesReg.remove(autoFileProgId); // Remove the entire ProgID key
+                    classesReg.sync(); // Sync immediately after removal
+                }
+            }
+
+            // Register the main ProgID
             classesReg.beginGroup(info.id);
             classesReg.setValue(".", info.name);
             if (!info.icon.isEmpty()) {
