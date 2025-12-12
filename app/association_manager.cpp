@@ -127,10 +127,10 @@ void AssociationManager::checkStatus() {
 void AssociationManager::applyAssociations(const QList<QString> &selectedProgIds) {
     QString appPath = getTargetAppFullPath();
     QString command = m_openCommand;
-    
+
     // Replace placeholder with actual path
     command.replace("{targetAppFullPath}", appPath);
-    
+
     qDebug() << "Applying associations. Selected:" << selectedProgIds;
     qDebug() << "Command:" << command;
     QSettings classesReg("HKEY_CURRENT_USER\\Software\\Classes", QSettings::NativeFormat);
@@ -141,13 +141,13 @@ void AssociationManager::applyAssociations(const QList<QString> &selectedProgIds
         classesReg.setValue("FriendlyAppName", m_friendlyAppName);
         classesReg.beginGroup("shell/open/command");
         classesReg.setValue(".", command);
-        classesReg.endGroup();
-        
+        classesReg.endGroup(); // shell/open/command
+
         // Register Capabilities (makes app appear in Windows Settings)
         classesReg.beginGroup("Capabilities");
         classesReg.setValue("ApplicationName", m_friendlyAppName);
         classesReg.setValue("ApplicationDescription", m_friendlyAppName);
-        
+
         // Register FileAssociations under Capabilities
         classesReg.beginGroup("FileAssociations");
         for (const auto &info : m_progIds) {
@@ -160,11 +160,11 @@ void AssociationManager::applyAssociations(const QList<QString> &selectedProgIds
         }
         classesReg.endGroup(); // FileAssociations
         classesReg.endGroup(); // Capabilities
-        
+
         classesReg.endGroup(); // appRegKey
         classesReg.sync();
         qDebug() << "Registered App:" << appRegKey << "FriendlyName:" << m_friendlyAppName;
-        
+
         // Register in RegisteredApplications (required for Windows Settings)
         QSettings regApps("HKEY_CURRENT_USER\\Software\\RegisteredApplications", QSettings::NativeFormat);
         QString capabilitiesPath = "Software\\Classes\\" + appRegKey + "\\Capabilities";
@@ -177,7 +177,7 @@ void AssociationManager::applyAssociations(const QList<QString> &selectedProgIds
         classesReg.remove(appRegKey);
         classesReg.sync();
         qDebug() << "Unregistered App:" << appRegKey;
-        
+
         // Remove from RegisteredApplications
         QSettings regApps("HKEY_CURRENT_USER\\Software\\RegisteredApplications", QSettings::NativeFormat);
         regApps.remove(m_friendlyAppName);
@@ -224,21 +224,20 @@ void AssociationManager::applyAssociations(const QList<QString> &selectedProgIds
             }
             progIdCommand.replace("{targetAppFullPath}", appPath);
             classesReg.setValue(".", progIdCommand);
-            classesReg.endGroup();
-            classesReg.endGroup();
+            classesReg.endGroup(); // shell/open/command
+            classesReg.endGroup(); // info.id
             classesReg.sync();
             qDebug() << "Registered ProgID:" << info.id;
             // Register extensions using OpenWithProgids (Windows 8+ compatible)
             for (const QString &ext : info.extensions) {
                 QString extKey = "." + ext;
                 classesReg.beginGroup(extKey);
-                
+
                 // Register our ProgID in OpenWithProgids
                 classesReg.beginGroup("OpenWithProgids");
                 classesReg.setValue(info.id, "");  // Empty value, just the key name matters
-                classesReg.endGroup();
-                
-                classesReg.endGroup();
+                classesReg.endGroup(); // OpenWithProgids
+                classesReg.endGroup(); // extKey
                 classesReg.sync();
                 qDebug() << "Registered" << info.id << "in OpenWithProgids for" << extKey;
             }
@@ -251,22 +250,24 @@ void AssociationManager::applyAssociations(const QList<QString> &selectedProgIds
             for (const QString &ext : info.extensions) {
                 QString extKey = "." + ext;
                 classesReg.beginGroup(extKey);
-                
+
                 // Remove our ProgID from OpenWithProgids
                 classesReg.beginGroup("OpenWithProgids");
                 if (classesReg.contains(info.id)) {
                     classesReg.remove(info.id);
                     qDebug() << "Removed" << info.id << "from OpenWithProgids for" << extKey;
                 }
-                classesReg.endGroup();
-                
-                classesReg.endGroup();
+                classesReg.endGroup(); // OpenWithProgids
+
+                classesReg.endGroup(); // extKey
                 classesReg.sync();
             }
         }
     }
     // Notify System
     SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, nullptr, nullptr);
+
+    // Refresh status after changes
     checkStatus();
 }
 

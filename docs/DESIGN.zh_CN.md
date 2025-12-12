@@ -72,6 +72,15 @@
 "MyApp.jpg"=hex(0):
 ```
 
+另外，如果用户期望关联某个扩展名（假设为 `ext`），并且用户曾经通过手动选择程序的形式关联过该扩展名，则当用户手动选择程序的形式关联时，系统会在下面的注册表位置创建一个相关的路径为 `ext_auto_file` 的*自动 ProgID*：
+
+```ini
+[HKEY_CURRENT_USER\Software\Classes\ext_auto_file]
+[HKEY_CURRENT_USER\Software\Classes\ext_auto_file\shell\open\command]
+```
+
+由于此类自动 ProgID 的优先级会高于其他 ProgID，故若用户勾选了对应的文件格式，则本程序会在进行对应格式关联时移除该自动 ProgID。若用户未勾选对应格式的关联，则即便对应的自动 ProgID 存在也不会删除对应的自动 ProgID。
+
 ## 分发说明
 
 此程序基于 Qt 6，对于同样基于 Qt 6 且动态链接 Qt 依赖的程序（例如使用官方版 Qt 进行分发的程序），最佳分发方式即使用版本相同的 Qt 构建此程序，并将构建产物随目标程序一同分发，使此程序可复用目标程序的运行时，确保此程序的体积最小。这是预期的分发方式。
