@@ -43,7 +43,7 @@
     <message>
         <location filename="../app/mainwindow.cpp" line="38"/>
         <source>Registered: %1 | Associated: %2 format(s)</source>
-        <translation>注册状态：%1 | 格式关联：%2 个文件格式</translation>
+        <translation>注册状态：%1 | 格式关联：%2 组文件格式</translation>
     </message>
     <message>
         <location filename="../app/mainwindow.cpp" line="39"/>
