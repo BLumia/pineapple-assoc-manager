@@ -44,46 +44,7 @@ This tool can be used as a standalone utility as well. If no external `default-a
 
 ## Configuration (.pacfg)
 
-The configuration file is a standard INI file.
-
-### Top-Level Settings
-
-| Key | Description |
-| :--- | :--- |
-| `targetApp` | The executable name of the target application (e.g., `myapp.exe`). |
-| `friendlyAppName` | The display name of the application in Windows settings. |
-| `openCommand` | The default command to open files. `{targetAppFullPath}` is replaced by the absolute path to `targetApp`. |
-| `genericFileIcon` | (Optional) A fallback icon path to use if a specific ProgId icon is missing. |
-
-### ProgId Sections
-
-Define file types using `[ProgId/<ID>]` sections.
-
-| Key | Description |
-| :--- | :--- |
-| `name` | The description of the file type (e.g., "JPEG Image"). |
-| `extensions` | Comma-separated list of extensions (e.g., `jpg,jpeg`). If omitted, the ProgId ID is used as the extension. |
-| `icon` | (Optional) Path to the icon file. Defaults to `icons/<ID>.ico` if omitted. |
-| `openCommand` | (Optional) Specific command to open this file type. Overrides the global `openCommand`. |
-
-**Example:**
-
-```ini
-targetApp=myapp.exe
-friendlyAppName=My Application
-openCommand="\"{targetAppFullPath}\" \"%1\""
-genericFileIcon=icons/generic.ico
-
-[ProgId/image]
-name=Image File
-extensions=png,jpg,jpeg
-icon=icons/image.ico
-
-[ProgId/text]
-name=Text Document
-extensions=txt
-; Uses global openCommand
-```
+Please read `docs/PACFG_SPEC.md`.
 
 ## Building
 
@@ -105,3 +66,9 @@ cmake --build build
 ## License
 
 This project is licensed under the MIT License.
+
+## Paid Support and Sponsorship
+
+Feature requests can be made through GitHub issues or discussions but we don't garantee that we will implement them. If you want to speedup a certain feature's development, please consider sponsor us!
+
+While this project is free and open-source, we offer paid support for Pineapple Association Manager as well. If MIT license is not an option for your usage or if you need assistance or have a question, please feel free to reach out to us at `business<at>blumia<dot>net` in private or by contacting us on GitHub.
