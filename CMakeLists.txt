@@ -23,7 +23,7 @@ find_package(Qt6 "6.8" REQUIRED COMPONENTS Widgets LinguistTools)
 set(EXE_NAME passoc)
 
 # Enable Qt tools
-qt_standard_project_setup(I18N_TRANSLATED_LANGUAGES en zh_CN ko ru tr vi)
+qt_standard_project_setup(I18N_TRANSLATED_LANGUAGES en zh_CN ko ru sl tr vi)
 
 configure_file(assets/pineapple-assoc-manager.rc.in pineapple-assoc-manager.rc @ONLY)
 
