@@ -1,14 +1,21 @@
 name: Windows CI
 
-on: [push, pull_request, workflow_dispatch]
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      qt_ver:
+        description: 'Qt Version to use (e.g., 6.10.1)'
+        required: false
+        default: '6.10.2'
 
 jobs:
   msvc-cmake-build:
-  
     strategy:
       matrix:
         include:
-          - qt_ver: '6.10.1'
+          - qt_ver: ${{ inputs.qt_ver || '6.10.2' }}
             vs: '2022'
             aqt_arch: 'win64_msvc2022_64'
             msvc_arch: 'x64'
