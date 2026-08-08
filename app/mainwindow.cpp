@@ -5,6 +5,13 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QMessageBox>
+#include <QFont>
+
+namespace {
+    // UserRole values to distinguish item types in the list widget
+    const int TypeRole = Qt::UserRole;       // "header", "progid", "contextmenu"
+    const int IdRole = Qt::UserRole + 1;     // the item id
+}
 
 MainWindow::MainWindow(AssociationManager *manager, QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow), m_manager(manager) {
@@ -27,12 +34,47 @@ void MainWindow::updateUI() {
     setWindowTitle(tr("File Association Manager for %1").arg(m_manager->targetApp()));
 
     ui->listWidget->clear();
-    for (const auto &info : m_manager->progIds()) {
-        QListWidgetItem *item = new QListWidgetItem(ui->listWidget);
-        item->setText(QString("%1 (%2)").arg(info.extensions.join(", "), info.name));
-        item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
-        item->setCheckState(info.associated ? Qt::Checked : Qt::Unchecked);
-        item->setData(Qt::UserRole, info.id);
+
+    // --- File Type Associations section ---
+    bool hasProgIds = !m_manager->progIds().isEmpty();
+    bool hasContextMenuItems = !m_manager->contextMenuItems().isEmpty();
+
+    if (hasProgIds) {
+        QListWidgetItem *header = new QListWidgetItem(tr("File Type Associations"), ui->listWidget);
+        QFont headerFont = header->font();
+        headerFont.setBold(true);
+        header->setFont(headerFont);
+        header->setFlags(Qt::ItemIsEnabled);
+        header->setData(TypeRole, "header");
+
+        for (const auto &info : m_manager->progIds()) {
+            QListWidgetItem *item = new QListWidgetItem(ui->listWidget);
+            item->setText(QString("%1 (%2)").arg(info.extensions.join(", "), info.name));
+            item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
+            item->setCheckState(info.associated ? Qt::Checked : Qt::Unchecked);
+            item->setData(TypeRole, "progid");
+            item->setData(IdRole, info.id);
+        }
+    }
+
+    // --- Context Menu Items section ---
+    if (hasContextMenuItems) {
+        QListWidgetItem *header = new QListWidgetItem(tr("Context Menu Items"), ui->listWidget);
+        QFont headerFont = header->font();
+        headerFont.setBold(true);
+        header->setFont(headerFont);
+        header->setFlags(Qt::ItemIsEnabled);
+        header->setData(TypeRole, "header");
+
+        for (const auto &item : m_manager->contextMenuItems()) {
+            QListWidgetItem *listItem = new QListWidgetItem(ui->listWidget);
+            QString targetDesc = item.targets.contains("*") ? tr("All Files") : item.targets.join(", ");
+            listItem->setText(QString("%1 (%2)").arg(item.name, targetDesc));
+            listItem->setFlags(listItem->flags() | Qt::ItemIsUserCheckable);
+            listItem->setCheckState(item.registered ? Qt::Checked : Qt::Unchecked);
+            listItem->setData(TypeRole, "contextmenu");
+            listItem->setData(IdRole, item.id);
+        }
     }
 
     QString status = tr("Registered: %1 | Associated: %2 format(s)")
@@ -43,27 +85,40 @@ void MainWindow::updateUI() {
 
 void MainWindow::onSelectAllClicked() {
     for (int i = 0; i < ui->listWidget->count(); ++i) {
-        ui->listWidget->item(i)->setCheckState(Qt::Checked);
+        QListWidgetItem *item = ui->listWidget->item(i);
+        if (item->data(TypeRole).toString() == "header") continue;
+        item->setCheckState(Qt::Checked);
     }
 }
 
 void MainWindow::onClearAllClicked() {
     for (int i = 0; i < ui->listWidget->count(); ++i) {
-        ui->listWidget->item(i)->setCheckState(Qt::Unchecked);
+        QListWidgetItem *item = ui->listWidget->item(i);
+        if (item->data(TypeRole).toString() == "header") continue;
+        item->setCheckState(Qt::Unchecked);
     }
 }
 
 void MainWindow::onApplyClicked() {
-    QList<QString> selectedIds;
+    QList<QString> selectedProgIds;
+    QList<QString> selectedContextMenuIds;
     for (int i = 0; i < ui->listWidget->count(); ++i) {
         QListWidgetItem *item = ui->listWidget->item(i);
         if (item->checkState() == Qt::Checked) {
-            selectedIds.append(item->data(Qt::UserRole).toString());
+            QString type = item->data(TypeRole).toString();
+            QString id = item->data(IdRole).toString();
+            if (type == "progid")
+                selectedProgIds.append(id);
+            else if (type == "contextmenu")
+                selectedContextMenuIds.append(id);
         }
     }
-    qDebug() << "selected:" << selectedIds;
-    m_manager->applyAssociations(selectedIds);
-    if (selectedIds.count() > 0) {
+    qDebug() << "selected ProgIds:" << selectedProgIds;
+    qDebug() << "selected ContextMenu:" << selectedContextMenuIds;
+    m_manager->applyAssociations(selectedProgIds);
+    m_manager->applyContextMenuItems(selectedContextMenuIds);
+    bool hasAnySelection = !selectedProgIds.isEmpty() || !selectedContextMenuIds.isEmpty();
+    if (hasAnySelection) {
         QMessageBox infoBox(this);
         infoBox.setIcon(QMessageBox::Information);
         infoBox.setWindowTitle(tr("Success"));

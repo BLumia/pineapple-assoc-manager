@@ -18,6 +18,12 @@ name[zh_CN]=菠萝格式关联配置文件 ; i18n support
 extensions=pacfg
 openCommand="\"{targetAppFullPath}\" -c \"%1\"" ; open command (overrides global openCommand)
 icon=icons/pacfg.ico ; icon (optional)
+
+[ContextMenu/editWithMyApp]
+name=Edit with MyApp ; context menu display text
+name[zh_CN]=使用 MyApp 编辑 ; i18n support
+target=* ; applies to all files
+command="\"{targetAppFullPath}\" --edit \"%1\"" ; command to execute
 ```
 
 ## Config file content description and notes
@@ -37,10 +43,21 @@ Define file types using `[ProgId/<ID>]` sections.
 
 | Key | Description |
 | :--- | :--- |
-| `name` | The description of the file type (e.g., "JPEG Image"). |
-| `extensions` | Comma-separated list of extensions (e.g., `jpg,jpeg`). If omitted, the ProgId ID is used as the extension. |
+| `name` | The description of the file type (e.g. "JPEG Image"). |
+| `extensions` | Comma-separated list of extensions (e.g. `jpg,jpeg`). If omitted, the ProgId ID is used as the extension. |
 | `icon` | (Optional) Path to the icon file. Defaults to `icons/<ID>.ico` if omitted. |
 | `openCommand` | (Optional) Specific command to open this file type. Overrides the global `openCommand`. |
+
+### ContextMenu Sections
+
+Define right-click context menu entries using `[ContextMenu/<ID>]` sections. These add custom actions (e.g. "Edit with MyApp") to the Windows Explorer right-click menu. This section is entirely optional — omit it if the target application does not need context menu entries.
+
+| Key | Description |
+| :--- | :--- |
+| `name` | The display text shown in the context menu (e.g. "Edit with MyApp"). |
+| `target` | (Optional) What the menu item applies to. `*` for all files (default), or comma-separated extensions (e.g. `txt,md`). |
+| `command` | The command to execute. `{targetAppFullPath}` is replaced with the target app's full path. `%1` is the right-clicked file. Falls back to the global `openCommand` if omitted. |
+| `icon` | (Optional) Icon shown next to the menu item. Defaults to the target application's icon. |
 
 ### Notes
 

@@ -92,6 +92,46 @@ bool AssociationManager::loadConfig(const QString &configPath, const QString &ta
         }
         settings.endGroup();
     }
+    // Load ContextMenu items
+    m_contextMenuItems.clear();
+    if (settings.childGroups().contains("ContextMenu")) {
+        settings.beginGroup("ContextMenu");
+        for (const QString &id : settings.childGroups()) {
+            settings.beginGroup(id);
+            ContextMenuItem item;
+            item.id = id;
+            item.regKeyName = targetApp(true) + "." + id;
+            // name localization
+            if (settings.contains("name[" + lang + "]"))
+                item.name = settings.value("name[" + lang + "]").toString();
+            else if (settings.contains("name[" + langShort + "]"))
+                item.name = settings.value("name[" + langShort + "]").toString();
+            else
+                item.name = settings.value("name").toString();
+            if (item.name.isEmpty())
+                item.name = id;
+            // target parsing
+            item.targets.clear();
+            QStringList rawTargets = settings.value("target").toStringList();
+            if (rawTargets.isEmpty()) {
+                QString str = settings.value("target", "*").toString();
+                rawTargets = str.split(",", Qt::SkipEmptyParts);
+            }
+            for (const QString &t : rawTargets) {
+                QString trimmed = t.trimmed();
+                if (!trimmed.isEmpty())
+                    item.targets.append(trimmed);
+            }
+            if (item.targets.isEmpty())
+                item.targets.append("*");
+            item.command = settings.value("command").toString();
+            item.icon = settings.value("icon").toString();
+            item.registered = false;
+            m_contextMenuItems.append(item);
+            settings.endGroup();
+        }
+        settings.endGroup();
+    }
     return true;
 }
 
@@ -120,6 +160,29 @@ void AssociationManager::checkStatus() {
             if (!isRegistered) allAssoc = false;
         }
         info.associated = allAssoc;
+    }
+    // Check ContextMenu items status
+    for (auto &item : m_contextMenuItems) {
+        item.registered = false;
+        for (const QString &target : item.targets) {
+            QStringList pathParts;
+            if (target == "*") {
+                pathParts << "*" << "shell" << item.regKeyName;
+            } else {
+                pathParts << "SystemFileAssociations" << ("." + target) << "shell" << item.regKeyName;
+            }
+            // Navigate into the verb key and check default value
+            for (const QString &part : pathParts)
+                classesReg.beginGroup(part);
+            bool exists = !classesReg.value(".").toString().isEmpty();
+            for (int i = 0; i < pathParts.size(); ++i)
+                classesReg.endGroup();
+            if (exists) {
+                item.registered = true;
+                break;
+            }
+        }
+        qDebug() << "Check ContextMenu:" << item.id << "Registered:" << item.registered;
     }
     emit statusChanged();
 }
@@ -264,6 +327,68 @@ void AssociationManager::applyAssociations(const QList<QString> &selectedProgIds
             }
         }
     }
+    // Notify System
+    SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, nullptr, nullptr);
+
+    // Refresh status after changes
+    checkStatus();
+}
+
+void AssociationManager::applyContextMenuItems(const QList<QString> &selectedIds) {
+    QString appPath = getTargetAppFullPath();
+
+    qDebug() << "Applying context menu items. Selected:" << selectedIds;
+    QSettings classesReg("HKEY_CURRENT_USER\\Software\\Classes", QSettings::NativeFormat);
+
+    for (const auto &item : m_contextMenuItems) {
+        bool shouldRegister = selectedIds.contains(item.id);
+        for (const QString &target : item.targets) {
+            QStringList pathParts;
+            if (target == "*") {
+                pathParts << "*" << "shell" << item.regKeyName;
+            } else {
+                pathParts << "SystemFileAssociations" << ("." + target) << "shell" << item.regKeyName;
+            }
+
+            if (shouldRegister) {
+                // Navigate into the verb key
+                for (const QString &part : pathParts)
+                    classesReg.beginGroup(part);
+                // Set default value (display name)
+                classesReg.setValue(".", item.name);
+                // Write icon if available
+                QString iconPath;
+                if (!item.icon.isEmpty()) {
+                    iconPath = getAbsoluteFilePath(item.icon);
+                }
+                if (iconPath.isEmpty() || !QFile::exists(iconPath)) {
+                    iconPath = appPath;
+                }
+                if (QFile::exists(iconPath)) {
+                    classesReg.setValue("Icon", iconPath);
+                }
+                // Write command sub-key
+                classesReg.beginGroup("command");
+                QString cmd = item.command;
+                if (cmd.isEmpty())
+                    cmd = m_openCommand;
+                cmd.replace("{targetAppFullPath}", appPath);
+                classesReg.setValue(".", cmd);
+                classesReg.endGroup(); // command
+                // Navigate back out
+                for (int i = 0; i < pathParts.size(); ++i)
+                    classesReg.endGroup();
+                classesReg.sync();
+                qDebug() << "Registered ContextMenu:" << item.id << "for target:" << target;
+            } else {
+                // Remove the verb key entirely
+                classesReg.remove(pathParts.join("/"));
+                classesReg.sync();
+                qDebug() << "Removed ContextMenu:" << item.id << "for target:" << target;
+            }
+        }
+    }
+
     // Notify System
     SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, nullptr, nullptr);
 

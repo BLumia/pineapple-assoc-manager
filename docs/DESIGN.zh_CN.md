@@ -81,6 +81,38 @@
 
 由于此类自动 ProgID 的优先级会高于其他 ProgID，故若用户勾选了对应的文件格式，则本程序会在进行对应格式关联时移除该自动 ProgID。若用户未勾选对应格式的关联，则即便对应的自动 ProgID 存在也不会删除对应的自动 ProgID。
 
+## 右键菜单项相关注册表位置
+
+除文件格式关联外，本程序还支持为目标程序添加右键菜单项。此功能通过配置文件中的 `[ContextMenu/<ID>]` 区块描述，与文件格式关联完全独立。
+
+假设目标程序 `MyApp.exe`，配置了一个 `target=*` 的右键菜单项，ID 为 `editWithMyApp`，本程序会向下列注册表位置写入内容：
+
+```ini
+; ----------------------------------------------------------
+; 1. 适用于所有文件 (*) 的右键菜单项
+; ----------------------------------------------------------
+[HKEY_CURRENT_USER\Software\Classes\*\shell\MyApp.editWithMyApp]
+@="使用 MyApp 编辑"
+"Icon"="C:\\path\\to\\MyApp.exe"
+
+[HKEY_CURRENT_USER\Software\Classes\*\shell\MyApp.editWithMyApp\command]
+@="\"C:\\path\\to\\MyApp.exe\" --edit \"%1\""
+```
+
+若 `target` 为具体扩展名（如 `txt`），则写入位置为 `SystemFileAssociations` 路径，以避免与 ProgId 关联逻辑冲突：
+
+```ini
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.txt\shell\MyApp.editWithMyApp]
+@="使用 MyApp 编辑"
+
+[HKEY_CURRENT_USER\Software\Classes\SystemFileAssociations\.txt\shell\MyApp.editWithMyApp\command]
+@="\"C:\\path\\to\\MyApp.exe\" --edit \"%1\""
+```
+
+右键菜单项的注册与取消注册独立于文件格式关联。即使用户未勾选任何文件格式关联，只要勾选了右键菜单项并点击"注册关联"，对应的右键菜单项仍会被注册。
+
+> **注意**：在 Windows 11 中，通过传统注册表方式添加的右键菜单项会出现在"显示更多选项"（旧版菜单）中，而非新版紧凑菜单的一级入口。这是 Windows 11 的系统限制。
+
 ## 分发说明
 
 此程序基于 Qt 6，对于同样基于 Qt 6 且动态链接 Qt 依赖的程序（例如使用官方版 Qt 进行分发的程序），最佳分发方式即使用版本相同的 Qt 构建此程序，并将构建产物随目标程序一同分发，使此程序可复用目标程序的运行时，确保此程序的体积最小。这是预期的分发方式。

@@ -13,3 +13,9 @@ name=Association Demo File
 name[zh_CN]=格式关联测试文件
 extensions=pademo,patest
 openCommand="\"{targetAppFullPath}\" -d \"%1\""
+
+[ContextMenu/testWithPAssoc]
+name=Test with PAssoc
+name[zh_CN]=使用 PAssoc 测试
+target=pademo,patest
+command="\"{targetAppFullPath}\" -d \"%1\""

@@ -19,6 +19,16 @@ struct ProgIdInfo {
     bool associated;        // Are extensions associated?
 };
 
+struct ContextMenuItem {
+    QString id;             // config id, e.g. "editWithMyApp"
+    QString regKeyName;     // registry verb key name (prefixed), e.g. "MyApp.editWithMyApp"
+    QString name;           // Display name (localized)
+    QStringList targets;    // ["*"] or ["txt","md"]
+    QString command;        // Command (may contain {targetAppFullPath})
+    QString icon;           // Icon path (optional)
+    bool registered;        // Is this menu item currently in registry?
+};
+
 class AssociationManager : public QObject {
     Q_OBJECT
 public:
@@ -27,9 +37,11 @@ public:
     bool loadConfig(const QString &configPath, const QString &targetAppOverride = QString());
     void checkStatus();
     void applyAssociations(const QList<QString> &selectedProgIds);
+    void applyContextMenuItems(const QList<QString> &selectedIds);
 
     QString friendlyAppName() const { return m_friendlyAppName; }
     QList<ProgIdInfo> progIds() const { return m_progIds; }
+    QList<ContextMenuItem> contextMenuItems() const { return m_contextMenuItems; }
     bool isAppRegistered() const { return m_isAppRegistered; }
     QString targetApp(bool withoutSuffix = false) const;
     int associatedCount() const;
@@ -47,6 +59,7 @@ private:
     QString m_openCommand;
     QString m_genericFileIcon;
     QList<ProgIdInfo> m_progIds;
+    QList<ContextMenuItem> m_contextMenuItems;
     bool m_isAppRegistered = false;
 
     QString getAbsoluteFilePath(const QString &relativeFilePathAndName) const;

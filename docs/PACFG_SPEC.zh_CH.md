@@ -18,6 +18,12 @@ name[zh_CN]=菠萝格式关联配置文件 ; 同样支持多语言本地化支�
 extensions=pacfg
 openCommand="\"{targetAppFullPath}\" -c \"%1\"" ; 打开文件的命令，可选，不提供则使用顶层 openCommand 的内容
 icon=icons/pacfg.ico ; 图标（可选）
+
+[ContextMenu/editWithMyApp]
+name=Edit with MyApp ; 右键菜单中显示的文本
+name[zh_CN]=使用 MyApp 编辑 ; 同样支持多语言本地化支持
+target=* ; 适用于所有文件
+command="\"{targetAppFullPath}\" --edit \"%1\"" ; 执行的命令
 ```
 
 ## 配置文件内容说明和注意事项
@@ -41,6 +47,17 @@ icon=icons/pacfg.ico ; 图标（可选）
 | `extensions` | 扩展名列表，多个扩展名时用半角逗号分隔 (例如 `jpg,jpeg`)。省略此字段时，将使用 ProgId 的名称作为扩展名 |
 | `icon` | 图标文件路径（可选），默认为 `icons/<ID>.ico` |
 | `openCommand` | 打开文件的默认命令（可选），不提供时使用顶层设置的内容 |
+
+### ContextMenu 部分
+
+使用 `[ContextMenu/<ID>]` 区块定义右键菜单项。可在 Windows 资源管理器的右键菜单中添加自定义操作（例如"使用 MyApp 编辑"）。此部分完全是可选的，若目标程序不需要右键菜单项，则省略即可。
+
+| 键 | 描述 |
+| :--- | :--- |
+| `name` | 右键菜单中显示的文本 (例如 "使用 MyApp 编辑") |
+| `target` | （可选）菜单项的适用范围。`*` 表示所有文件（默认值），也可填逗号分隔的扩展名 (例如 `txt,md`) |
+| `command` | 执行的命令。`{targetAppFullPath}` 将被替换为目标程序的完整路径，`%1` 为被右键的文件。省略时使用顶层 `openCommand` |
+| `icon` | （可选）菜单项旁显示的图标，默认使用目标程序本身的图标 |
 
 ### 注意事项
 
