@@ -5,7 +5,7 @@
 cmake_minimum_required(VERSION 3.23)
 
 project(pineapple-assoc-manager
-    VERSION 1.0.1
+    VERSION 1.1.0
     HOMEPAGE_URL "https://github.com/BLumia/pineapple-assoc-manager"
 )
 
@@ -23,7 +23,7 @@ find_package(Qt6 "6.8" REQUIRED COMPONENTS Widgets LinguistTools)
 set(EXE_NAME passoc)
 
 # Enable Qt tools
-qt_standard_project_setup(I18N_TRANSLATED_LANGUAGES en zh_CN ko ru sl tr vi)
+qt_standard_project_setup(I18N_TRANSLATED_LANGUAGES en zh_CN ar ko ru sl nl tr vi)
 
 configure_file(assets/pineapple-assoc-manager.rc.in pineapple-assoc-manager.rc @ONLY)
 
