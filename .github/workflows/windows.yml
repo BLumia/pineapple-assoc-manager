@@ -8,7 +8,7 @@ on:
       qt_ver:
         description: 'Qt Version to use'
         required: false
-        default: '6.10.3'
+        default: '6.11.2'
       tag_ver:
         description: 'Git tag or ref to checkout (leave empty for latest code)'
         required: false
@@ -19,7 +19,7 @@ jobs:
     runs-on: windows-2022
 
     env:
-      QT_VER: ${{ inputs.qt_ver || '6.10.3' }}
+      QT_VER: ${{ inputs.qt_ver || '6.11.2' }}
       VS_VER: '2022'
       AQT_ARCH: 'win64_msvc2022_64'
       MSVC_ARCH: 'x64'
@@ -35,6 +35,8 @@ jobs:
         arch: ${{ env.AQT_ARCH }}
         version: ${{ env.QT_VER }}
         cache: true
+        # we need this until miurahr/aqtinstall#1007 ships 3.3.1 for Qt >= 6.11.0 for Windows.
+        aqtsource: 'aqtinstall @ git+https://github.com/miurahr/aqtinstall@16db45a70b5905ad596941b223469bc86a56901e'
     - name: Build
       shell: cmd
       run: |
