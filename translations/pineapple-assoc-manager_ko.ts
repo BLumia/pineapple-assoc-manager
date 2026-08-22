@@ -43,17 +43,17 @@
     <message>
         <location filename="../app/mainwindow.cpp" line="43"/>
         <source>File Type Associations</source>
-        <translation type="unfinished"></translation>
+        <translation>파일 유형 연결</translation>
     </message>
     <message>
         <location filename="../app/mainwindow.cpp" line="62"/>
         <source>Context Menu Items</source>
-        <translation type="unfinished"></translation>
+        <translation>컨텍스트 메뉴 항목</translation>
     </message>
     <message>
         <location filename="../app/mainwindow.cpp" line="71"/>
         <source>All Files</source>
-        <translation type="unfinished"></translation>
+        <translation>모든 파일</translation>
     </message>
     <message>
         <location filename="../app/mainwindow.cpp" line="80"/>
@@ -151,7 +151,7 @@ then click &quot;Register Association&quot; again. It will remove all related in
     <message>
         <location filename="../app/main.cpp" line="41"/>
         <source>Manual select exectuable when target app not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>대상 앱을 찾을 수 없을 때 실행할 수 있는 항목을 수동으로 선택하세요.</translation>
     </message>
 </context>
 </TS>

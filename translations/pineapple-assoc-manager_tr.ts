@@ -43,17 +43,17 @@
     <message>
         <location filename="../app/mainwindow.cpp" line="43"/>
         <source>File Type Associations</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosya Türü İlişkileri</translation>
     </message>
     <message>
         <location filename="../app/mainwindow.cpp" line="62"/>
         <source>Context Menu Items</source>
-        <translation type="unfinished"></translation>
+        <translation>İçerik Menüsü Ögeleri</translation>
     </message>
     <message>
         <location filename="../app/mainwindow.cpp" line="71"/>
         <source>All Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Tüm Dosyalar</translation>
     </message>
     <message>
         <location filename="../app/mainwindow.cpp" line="80"/>
@@ -151,7 +151,7 @@ düğmesine tekrar tıklayabilirsiniz. Bu, sistem kayıt defterinden ilgili tüm
     <message>
         <location filename="../app/main.cpp" line="41"/>
         <source>Manual select exectuable when target app not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hedef uygulama bulunamadığında çalıştırılabilir dosyayı elle seçin.</translation>
     </message>
 </context>
 </TS>
