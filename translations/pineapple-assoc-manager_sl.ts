@@ -43,17 +43,17 @@
     <message>
         <location filename="../app/mainwindow.cpp" line="43"/>
         <source>File Type Associations</source>
-        <translation type="unfinished"></translation>
+        <translation>Povezave tipov datotek</translation>
     </message>
     <message>
         <location filename="../app/mainwindow.cpp" line="62"/>
         <source>Context Menu Items</source>
-        <translation type="unfinished"></translation>
+        <translation>Elementi kontekstnega menija</translation>
     </message>
     <message>
         <location filename="../app/mainwindow.cpp" line="71"/>
         <source>All Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Vse datoteke</translation>
     </message>
     <message>
         <location filename="../app/mainwindow.cpp" line="80"/>
@@ -151,7 +151,7 @@ in nato znova kliknete &quot;Registriraj povezavo&quot;. S tem boste odstranili 
     <message>
         <location filename="../app/main.cpp" line="41"/>
         <source>Manual select exectuable when target app not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ročna izbira izvedljive datoteke, ko ciljne aplikacije ni mogoče najti.</translation>
     </message>
 </context>
 </TS>
